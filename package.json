@@ -1,0 +1,36 @@
+{
+    "name": "monokai-vibrant-amped",
+    "displayName": "Monokai Vibrant Amped",
+    "description": "Monokai Vibrant Amped theme for Visual Studio Code.",
+    "version": "1.0.0",
+    "publisher": "Chadderbox",
+    "icon": "icon.png",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "categories": [
+        "Themes"
+    ],
+    "keywords": [
+        "monokai",
+        "monokai vibrant",
+        "amped",
+        "theme",
+        "color-theme",
+        "dark",
+        "csharp"
+    ],
+    "contributes": {
+        "themes": [
+            {
+                "label": "Monokai Vibrant Amped",
+                "uiTheme": "vs-dark",
+                "path": "./themes/monokai-vibrant-amped-color-theme.json"
+            }
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MonokaiVibrantAmped/monokai-vibrant-amped-vscode"
+    }
+}

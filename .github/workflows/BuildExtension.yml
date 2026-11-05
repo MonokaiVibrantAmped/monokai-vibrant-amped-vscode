@@ -1,0 +1,90 @@
+name: Build Extension
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set version number
+        id: version
+        shell: pwsh
+        run: |
+          $version = "1.0.$env:GITHUB_RUN_NUMBER"
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+          "tag=v$version" >> $env:GITHUB_OUTPUT
+          "filename=MonokaiVibrantAmped.vsix" >> $env:GITHUB_OUTPUT
+
+      - name: Update version in package.json
+        shell: pwsh
+        run: |
+          $pkg = Get-Content -Path "package.json" | ConvertFrom-Json
+          $pkg.version = "$env:VERSION"
+          $pkg | ConvertTo-Json -Depth 10 | Set-Content -Path "package.json"
+
+      - name: Build Extension
+        run: npx --yes @vscode/vsce package --no-git-tag-version --allow-missing-repository --out ${{ steps.version.outputs.filename }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.version.outputs.filename }}
+          path: ${{ steps.version.outputs.filename }}
+
+      - name: Get Changelog
+        id: changelog
+        shell: bash
+        run: |
+          # Default changelog content
+          changelog="- Initial release"
+
+          if git tag --list | grep .; then
+            last_tag=$(git describe --tags --abbrev=0)
+            echo "Last tag found: $last_tag"
+            changelog=$(git log --pretty=format:'- %s' "$last_tag"..HEAD)
+          else
+            echo "No tags found — using fallback changelog"
+          fi
+
+          # Write the changelog as a multi-line environment variable
+          printf "changelog<<EOF\n%s\nEOF\n" "$changelog" >> "$GITHUB_ENV"
+
+      - name: Create GitHub Release and Upload VSIX
+        uses: softprops/action-gh-release@v2
+        if: success()
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Release ${{ env.VERSION }}
+          body: |
+            ${{ github.event.head_commit.message }}
+
+            ## Changelog
+            ${{ env.changelog }}
+          files: ${{ steps.version.outputs.filename }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to VS Code Marketplace
+        if: success()
+        run: |
+          if [ -z "$VSCE_PAT" ]; then
+            echo "Neither VSCE_PAT nor VS_MARKETPLACE_PAT is set. Skipping publish to VS Code Marketplace."
+            exit 0
+          fi
+          npx --yes @vscode/vsce publish --packagePath "${{ steps.version.outputs.filename }}" -p "$VSCE_PAT"
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT || secrets.VS_MARKETPLACE_PAT }}
