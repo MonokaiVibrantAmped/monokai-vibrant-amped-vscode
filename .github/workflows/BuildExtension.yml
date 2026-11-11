@@ -12,14 +12,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Set version number
         id: version
@@ -40,7 +40,7 @@ jobs:
       - name: Build Extension
         run: npx --yes @vscode/vsce package --no-git-tag-version --allow-missing-repository --out ${{ steps.version.outputs.filename }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.version.outputs.filename }}
           path: ${{ steps.version.outputs.filename }}
@@ -52,10 +52,14 @@ jobs:
           # Default changelog content
           changelog="- Initial release"
 
-          if git tag --list | grep .; then
-            last_tag=$(git describe --tags --abbrev=0)
+          last_tag=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || git describe --tags --abbrev=0 2>/dev/null || git tag --sort=-version:refname | head -n 1)
+
+          if [ -n "$last_tag" ]; then
             echo "Last tag found: $last_tag"
-            changelog=$(git log --pretty=format:'- %s' "$last_tag"..HEAD)
+            changelog=$(git log --pretty=format:'- %s' "$last_tag"..HEAD 2>/dev/null || true)
+            if [ -z "$changelog" ]; then
+              changelog="- Initial release"
+            fi
           else
             echo "No tags found — using fallback changelog"
           fi
@@ -64,7 +68,7 @@ jobs:
           printf "changelog<<EOF\n%s\nEOF\n" "$changelog" >> "$GITHUB_ENV"
 
       - name: Create GitHub Release and Upload VSIX
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         if: success()
         with:
           tag_name: ${{ steps.version.outputs.tag }}
