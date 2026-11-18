@@ -149,10 +149,8 @@
         "dropdown.border": "#3E3E3E",
         "list.activeSelectionBackground": "#323232",
         "list.activeSelectionForeground": "#FAFAFA",
-        "list.activeSelectionIconForeground": "#FAFAFA",
         "list.inactiveSelectionBackground": "#2A2A2A",
         "list.inactiveSelectionForeground": "#FAFAFA",
-        "list.inactiveSelectionIconForeground": "#FAFAFA",
         "list.focusBackground": "#323232",
         "list.focusForeground": "#FAFAFA",
         "list.focusOutline": "#5F5F5F",
@@ -193,7 +191,40 @@
         "notificationLink.foreground": "#FFD52B",
         "notificationsErrorIcon.foreground": "#FF5976",
         "notificationsWarningIcon.foreground": "#FFD52B",
-        "notificationsInfoIcon.foreground": "#4EE2FC"
+        "notificationsInfoIcon.foreground": "#4EE2FC",
+        "symbolIcon.arrayForeground": "#8BB4F7",
+        "symbolIcon.booleanForeground": "#D973FC",
+        "symbolIcon.classForeground": "#4EE2FC",
+        "symbolIcon.colorForeground": "#FFD52B",
+        "symbolIcon.constantForeground": "#D973FC",
+        "symbolIcon.constructorForeground": "#8CF06B",
+        "symbolIcon.enumeratorForeground": "#4EE2FC",
+        "symbolIcon.enumeratorMemberForeground": "#D973FC",
+        "symbolIcon.eventForeground": "#FFD52B",
+        "symbolIcon.fieldForeground": "#8CF06B",
+        "symbolIcon.fileForeground": "#9E9E9E",
+        "symbolIcon.folderForeground": "#FFD52B",
+        "symbolIcon.functionForeground": "#8CF06B",
+        "symbolIcon.interfaceForeground": "#4EE2FC",
+        "symbolIcon.keyForeground": "#8BB4F7",
+        "symbolIcon.keywordForeground": "#FF5976",
+        "symbolIcon.methodForeground": "#8CF06B",
+        "symbolIcon.moduleForeground": "#4EE2FC",
+        "symbolIcon.namespaceForeground": "#4EE2FC",
+        "symbolIcon.nullForeground": "#D973FC",
+        "symbolIcon.numberForeground": "#D973FC",
+        "symbolIcon.objectForeground": "#4EE2FC",
+        "symbolIcon.operatorForeground": "#FF5976",
+        "symbolIcon.packageForeground": "#4EE2FC",
+        "symbolIcon.propertyForeground": "#8BB4F7",
+        "symbolIcon.referenceForeground": "#8BB4F7",
+        "symbolIcon.snippetForeground": "#FFD52B",
+        "symbolIcon.stringForeground": "#FFD52B",
+        "symbolIcon.structForeground": "#4EE2FC",
+        "symbolIcon.textForeground": "#9E9E9E",
+        "symbolIcon.typeParameterForeground": "#4EE2FC",
+        "symbolIcon.unitForeground": "#D973FC",
+        "symbolIcon.variableForeground": "#8CF06B"
     },
     "tokenColors": [
         {
@@ -910,8 +941,7 @@
         {
             "name": "Markdown Code",
             "scope": [
-                "markup.inline.raw",
-                "markup.raw.block"
+                "markup.inline.raw"
             ],
             "settings": {
                 "foreground": "#8CF06B"
